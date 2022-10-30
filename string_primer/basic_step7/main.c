@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define STR_SIZE 100
+#define STR_SIZE 10000
 #define N_SIZE 100
 
 int	main(void)
