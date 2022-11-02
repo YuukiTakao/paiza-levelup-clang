@@ -1,24 +1,32 @@
 #include <stdio.h>
-#include <stdlib.h>
-
-#define STR_SIZE 10000
 
 int	main(void)
 {
-	char	str[STR_SIZE];
-	char	c[2];
-	int		i;
+	char	S[10000 + 1];       
+	char	c[1 + 1];
+	
+	scanf("%s", S);
+	scanf("%s", c);
 
-	fgets(str, STR_SIZE, stdin);
-	fgets(c, 2, stdin);
-    // printf("str=%s c=%s\n", str, c);
-	i = 0;
-	while (str[i] != '\0' && str[i] != '\n')
+	for (int i = 0; S[i] != '\0'; i++)
 	{
-		if (str[i] == c[0])
-			break ;
-		i++;
+		if (S[i] == c[0])
+		{
+			printf("%d", i + 1);
+			// break;
+		}
 	}
-	printf("%d", i + 1);
+
+	// int	i;
+	// i = 0;
+	// while (S[i] != '\0')
+	// {
+	// 	if (S[i] == c[0])
+	// 	{
+	// 		printf("%d\n", i + 1);
+	// 		// break ;
+	// 	}
+	// 	i++;
+	// }
 	return (0);
 }
