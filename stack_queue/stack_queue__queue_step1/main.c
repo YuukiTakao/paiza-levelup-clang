@@ -27,7 +27,7 @@ Queue	*new(int cap) {
 Queue	*resize(Queue *self, int new_cap) {
 	int new_size = new_cap * sizeof(QUEUE_TYPE);
 	QUEUE_TYPE *tmp = realloc(self->array, new_size);
-	if (tmp == NULL) {
+		if (tmp == NULL) {
 		printf("failed array realloc...\n");
 		return NULL;
 	}
