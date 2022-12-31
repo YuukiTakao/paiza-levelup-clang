@@ -1,21 +1,17 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
 
 int	main(void) {
-    char N[3];
-    while(*N != '\n') {
-        read(0, &N, 1);
-        // write(1, &N, 1);
+    char str[5];
+    fgets(str, 5, stdin);
+    // printf("%s", str);
+    
+    int N;
+    sscanf(str, "%d", &N);
+    
+    for (int i = 0; i < N; i++) {
+        char str1[31];
+        fgets(str1, 31, stdin);
+        printf("%s", str1);
     }
-	
-    char buf[1600];
-    while (1) {
-        int read_size = read(0, &buf, 1);
-        if (read_size <= 0) {
-            break;
-        }
-		write(1, &buf, 1);
-    }
-	return (0);
+    return 0;
 }
