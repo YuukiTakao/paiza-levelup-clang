@@ -78,8 +78,8 @@ TDARRAY_TYPE **init_tdarray(int H, int W, TDARRAY_TYPE init) {
 }
 
 int	main(void) {
-	int H, W;
-	scanf("%d %d", &H, &W);
+	int H, W, N;
+	scanf("%d %d %d", &H, &W, &N);
 	// printf("%d %d\n", H, W);
 
 	TDARRAY_TYPE **map = init_tdarray(H, W, '.');
@@ -114,11 +114,11 @@ int	main(void) {
 		int ny = now.first;
 		int nx = now.second;
 
-		if (visited[ny][nx] == 3)
+		if (visited[ny][nx] == N)
 			continue;
 		
 		for (int i = -1; i <= 1; i += 2) {
-			if (0 <= ny + i && ny + i < H && map[ny + i][nx] == '.') {
+			if (0 <= ny + i && ny + i < H && visited[ny + i][nx] == -1) {
 				Pair next;
 				next.first = ny + i;
 				next.second = nx;
@@ -126,7 +126,7 @@ int	main(void) {
 				visited[ny + i][nx] = visited[ny][nx] + 1;
 				map[ny + i][nx] = '*';
 			}
-			if (0 <= nx + i && nx + i < W && map[ny][nx + i] == '.') {
+			if (0 <= nx + i && nx + i < W && visited[ny][nx + i] == -1) {
 				Pair next;
 				next.first = ny;
 				next.second = nx + i;
