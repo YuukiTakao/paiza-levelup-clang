@@ -63,76 +63,89 @@ void	push_back(Queue *self, QUEUE_TYPE elem) {
 }
 
 int	main(void) {
-	int H, W, N;
-	scanf("%d %d %d", &H, &W, &N);
-	// printf("H=%d W=%d N=%d\n", H, W, N);
+	int H, W;
+	scanf("%d %d", &H, &W);
+	// printf("%d %d\n", H, W);
 
-	int y, x;
-	scanf("%d %d", &y, &x);
+	int sy, sx;
+	scanf("%d %d", &sy, &sx);
+	// printf("%d %d\n", sy, sx);
+
+	int gy, gx;
+	scanf("%d %d", &gy, &gx);
+	// printf("%d %d\n", gy, gx);
 
 	char **map = calloc(H+1, sizeof(char *));
 	int **visited = calloc(H+1, sizeof(int *));
-	for (int i = 0; i < H; i++) {
+	for (int i = 0; i < H; i++)
+	{
 		map[i] = calloc(W+1, sizeof(char));
-		visited[i] = calloc(W+1, sizeof(int));
 		scanf("%s", map[i]);
-		for (int j = 0; j < W; j++) {
+		// printf("%s\n", map[i]);
+		visited[i] = calloc(W+1, sizeof(int));
+		for (int j = 0; j < W; j++)
+		{
 			visited[i][j] = -1;
 		}
 	}
 
-	map[y][x] = '*';
-	visited[y][x] = 0;
+	map[sy][sx] = '*';
+	visited[sy][sx] = 0;
 
-	Queue *que = new(4);
 	Pair start;
-	start.first = y;
-	start.second = x;
-
+	start.first = sy;
+	start.second = sx;
+	Queue *que = new(4);
 	push_back(que, start);
 
-	while(! empty(que)) {
+	int reachable_goal = 0;
+	while (!empty(que)) {
 		Pair now = front(que);
 		int ny = now.first;
 		int nx = now.second;
 		// printf("ny=%d nx=%d\n", ny, nx);
 		pop(que);
 
-		if (visited[ny][nx] == N)
-			break;
+		if (ny == gy && nx == gx) {
+			reachable_goal = 1;
+			printf("Yes\n");
+			return 0;
+		}
 
 		for (int i = -1; i <= 1; i += 2) {
-			if (0 <= ny + i && ny + i < H && map[ny+i][nx] == '.' && visited[ny+i][nx] == -1) {
-				map[ny + i][nx] = '*';
+			if (0 <= ny+i && ny+i < H && map[ny+i][nx] != '#' && visited[ny+i][nx] == -1) {
+				map[ny+i][nx] = '*';
 				visited[ny+i][nx] = visited[ny][nx] + 1;
 				Pair next;
-				next.first = ny+i;
+				next.first = ny + i;
 				next.second = nx;
 				push_back(que, next);
 			}
-			if (0 <= nx + i && nx + i < W && map[ny][nx+i] == '.' && visited[ny][nx+i] == -1) {
+			if (0 <= nx+i && nx+i < W && map[ny][nx+i] != '#' && visited[ny][nx+i] == -1) {
 				map[ny][nx+i] = '*';
-				visited[ny][nx+i] = visited[ny][nx] + 1;
+				visited[ny][nx+i] = visited[ny][nx];
 				Pair next;
 				next.first = ny;
-				next.second = nx+i;
+				next.second = nx + i;
 				push_back(que, next);
 			}
 		}
 	}
+	
+	printf("No\n");
 
-	// for debug
+	// debug
 	// for (int i = 0; i < H; i++) {
 	// 	for (int j = 0; j < W; j++) {
-	// 		if (j >= 1)
+	// 		if (j >= 1) 
 	// 			printf(" ");
 	// 		printf("%d", visited[i][j]);
 	// 	}
 	// 	printf("\n");
 	// }
-
-	for (int i = 0; i < H; i++) {
-		printf("%s\n", map[i]);
-	}
+	// for (int i = 0; i < H; i++)
+	// {
+	// 	printf("%s\n", map[i]);
+	// }
 	return (0);
 }
