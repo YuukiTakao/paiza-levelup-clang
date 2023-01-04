@@ -39,18 +39,19 @@ AdList	*new_adlist(int cap) {
 	return self;
 }
 
-
-int	dfs(AdList **G, int *visited, int now, int color) {
+AdList **adlist;
+int *visited;
+int	bi_partite_dfs(int now, int color) {
 	visited[now] = color;
-	for (int i = 0; i < G[now]->len; i++) {
-		int next = G[now]->arr[i];
+	for (int i = 0; i < adlist[now]->len; i++) {
+		int next = adlist[now]->arr[i];
 		if (visited[next] != -1) {
 			if (visited[next] == color) {
 				return 0;
 			}
 			continue;
 		}
-		if (dfs(G, visited, next, 1 - color) == 0) {
+		if (bi_partite_dfs(next, 1 - color) == 0) {
 			return 0;
 		}
 	}
@@ -62,7 +63,7 @@ int	main(void) {
 	scanf("%d %d", &N, &M);
 	// printf("%d %d\n", N, M);
 
-	AdList **adlist = calloc(N+1, sizeof(AdList *));
+	adlist = calloc(N+1, sizeof(AdList *));
 	int a, b;
 	for (int i = 1; i <= M; i++) {
 		scanf("%d %d", &a, &b);
@@ -76,7 +77,7 @@ int	main(void) {
 		push_adlist(adlist[b], a);
 	}
 
-	int *visited = calloc(N+1 ,sizeof(int));
+	visited = calloc(N+1 ,sizeof(int));
 	for (int i = 1; i <= N; i++) {
 		visited[i] = -1;
 	}
@@ -86,7 +87,7 @@ int	main(void) {
 		if (visited[i] != -1) {
 			continue;
 		}
-		if (adlist[i] != NULL && dfs(adlist, visited, i, 0) == 0) {
+		if (adlist[i] != NULL && bi_partite_dfs(i, 0) == 0) {
 			is_bipartite = 0;
 		}
 	}
