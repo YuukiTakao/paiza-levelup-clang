@@ -138,7 +138,7 @@ int	main(void) {
 			}
 		}
 	}
-	printf("%d\n", visited[Y] - visited[X]);
+	printf("%d\n", visited[Y]);
 
 	return (0);
 }
