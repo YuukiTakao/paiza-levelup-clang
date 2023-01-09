@@ -91,27 +91,38 @@ int in_array(Vector *vector, int n) {
 	}
 	return exists;
 }
+void	reset_vector(Vector *vector) {
+	vector->len = 0;
+}
+void	print_vector_with_space(Vector *vector) {
+	for (int i = 0; i < vector->len; i++){
+		if (i >= 1)
+			printf(" ");
+		printf("%d", vector->arr[i]);
+	}
+	printf("\n");
+}
 
-int N, S, T, P;
-AdList **adlist;
-// int *visited;
-Vector *min_path;
-Vector	*dfs(int position, Vector *path) {
-	// printf("path->len=%d min_path->len=%d\n", path->len, min_path->len);
+Vector	*init_min_path(int v_count) {
+	Vector *min_path = new_vector(2);
+	for (int i = 1; i <= v_count + 1; i++) {
+		push_vector(min_path, i);
+	}
+	return min_path;
+}
+Vector	*dfs_with_transit(int position, int goal, int transit, Vector *path, AdList **adlist, Vector *min_path) {
 	if (path->len < min_path->len) {
-		// visited[position] = 1;
 		for (int i = 0; i < adlist[position]->len; i++) {
 			int next = adlist[position]->arr[i];
 			if (in_array(path, next) == 0) {
 				push_vector(path, next);
-				// printf("next=%d T=%d P=%d in_array(path, P)=%d\n", next, T, P, in_array(path, P));
-				if (next == T && in_array(path, P) == 1) {
-					min_path = new_vector(2);
+				if (next == goal && in_array(path, transit) == 1) {
+					reset_vector(min_path); // dark magic
 					for (int j = 0; j < path->len; j++) {
 						push_vector(min_path, path->arr[j]);
 					}
 				} else {
-					dfs(next, path);
+					dfs_with_transit(next, goal, transit, path, adlist, min_path);
 				}
 				pop_vector(path);
 			}
@@ -119,12 +130,23 @@ Vector	*dfs(int position, Vector *path) {
 	}
 	return min_path;
 }
+Vector	*graph_dfs_shortest_path(AdList **adlist, int v_count, int start, int goal, int transit) {
+	Vector *min_path = init_min_path(v_count);
+
+	Vector *search_path = new_vector(2);
+	push_vector(search_path, start);
+
+	min_path = dfs_with_transit(start, goal, transit, search_path, adlist, min_path);
+	
+	return min_path;
+}
 
 int	main(void) {
+	int N, S, T, P;
 	scanf("%d %d %d %d", &N, &S, &T, &P);
 	// printf("%d %d %d %d\n", N, S, T, P);
 
-	adlist = calloc(N+1, sizeof(AdList));
+	AdList **adlist = calloc(N+1, sizeof(AdList));
 	int v, a;
 	for (int i = 1; i <= N; i++) {
 		scanf("%d", &v);
@@ -136,39 +158,14 @@ int	main(void) {
 			push_adlist(adlist[i], a);
 		}
 	}
-	// debug
-	// for (int i = 1; i <= N; i++) {
-	// 	printf("%d:", i);
-	// 	if (adlist[i] != NULL) {
-	// 		for (int j = 0; j < adlist[i]->len; j++) {
-	// 			printf(" %d", adlist[i]->arr[j]);
-	// 		}
-	// 	}
-	// 	printf("\n");
-	// }
-	// visited = calloc(N+1, sizeof(int));
-	min_path = new_vector(2);
-	for (int i = 1; i <= N + 1; i++) {
-		push_vector(min_path, i);
-	}
 
-	Vector *path = new_vector(2);
-	push_vector(path, S);
-	min_path = dfs(S, path);
+	Vector *min_path = graph_dfs_shortest_path(adlist, N, S, T, P);
 
 	if (min_path->len == N+1)
 		printf("-1\n");
 	else {
-		// printf("min_path->len=%d\n", min_path->len);
-		for (int i = 0; i < min_path->len; i++){
-			if (i >= 1)
-				printf(" ");
-			printf("%d", min_path->arr[i]);
-		}
-		printf("\n");
+		print_vector_with_space(min_path);
 	}
-		
-
 
 	return (0);
 }
