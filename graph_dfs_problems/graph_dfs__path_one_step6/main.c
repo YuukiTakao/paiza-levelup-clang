@@ -1,6 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int	cmp_asc(const void *n1, const void *n2) {
+	if (*(int *)n1 > *(int *)n2)
+		return 1;
+	else if (*(int *)n1 < *(int *)n2)
+		return -1;
+	else
+		return 0;
+}
 typedef struct {
 	int	vertex;
 	int	*arr;
@@ -92,6 +100,7 @@ int in_array(Vector *vector, int n) {
 	}
 	return exists;
 }
+
 Vector	*init_min_path(int v_count) {
 	Vector *min_path = new_vector(2);
 	for (int i = 1; i <= v_count + 1; i++) {
@@ -99,21 +108,14 @@ Vector	*init_min_path(int v_count) {
 	}
 	return min_path;
 }
-Vector	*dfs_with_transit(int position, int goal, Vector *transit, Vector *path, AdList **adlist, Vector *min_path) {
+Vector	*dfs_with_transit(int position, int goal, int transit, Vector *path, AdList **adlist, Vector *min_path) {
 	if (path->len < min_path->len) {
 		for (int i = 0; i < adlist[position]->len; i++) {
 			int next = adlist[position]->arr[i];
 			if (in_array(path, next) == 0) {
 				push_vector(path, next);
-				int ok = 1;
-				for (int i = 0; i < path->len; i++) {
-					for (int j = 0; j < transit->len; j++) {
-						if (path->arr[i] == transit->arr[j]) 
-							ok = 0;
-					}
-				}
-				if (next == goal && ok == 1) {
-					reset_vector(min_path);
+				if (next == goal) {
+					reset_vector(min_path); // dark magic
 					for (int j = 0; j < path->len; j++) {
 						push_vector(min_path, path->arr[j]);
 					}
@@ -126,7 +128,7 @@ Vector	*dfs_with_transit(int position, int goal, Vector *transit, Vector *path, 
 	}
 	return min_path;
 }
-Vector	*graph_dfs_shortest_path(AdList **adlist, int v_count, int start, int goal, Vector *transit) {
+Vector	*graph_dfs_shortest_path(AdList **adlist, int v_count, int start, int goal, int transit) {
 	Vector *min_path = init_min_path(v_count);
 
 	Vector *search_path = new_vector(2);
@@ -136,6 +138,7 @@ Vector	*graph_dfs_shortest_path(AdList **adlist, int v_count, int start, int goa
 	
 	return min_path;
 }
+
 
 void	print_vector_with_space(Vector *vector) {
 	for (int i = 0; i < vector->len; i++){
@@ -161,21 +164,38 @@ int	main(void) {
 		push_vector(transits, s);
 		// printf(" %d", s);
 	}
-	// printf("\n");
+	// printf("aaa\n");
 
 	AdList **adlist = calloc(N+1, sizeof(AdList));
 	int v, a;
 	for (int i = 1; i <= N; i++) {
 		scanf("%d", &v);
+		// printf("not in i=%d\n", i);
 		if (adlist[i] == NULL)
 			adlist[i] = new_adlist(2);
 		for (int j = 0; j < v; j++){
 			scanf("%d", &a);
-			push_adlist(adlist[i], a);
+			if (in_array(transits, i) == 0 && in_array(transits, a) == 0) {
+				// printf("not in a=%d\n", a);
+				push_adlist(adlist[i], a);
+			}
 		}
 	}
-	Vector *min_path = graph_dfs_shortest_path(adlist, N, S, T, transits);
+	// debug
+	// for (int i = 1; i <= N; i++) {	
+	// 	if (adlist[i] != NULL) {		
+	// 		printf("i=%d:", i);
+	// 		for (int j = 0; j < adlist[i]->len; j++) {
+	// 			if (j >= 1)
+	// 				printf(" ");
+	// 			printf("%d", adlist[i]->arr[j]);
+	// 		}
+	// 		printf("\n");
+	// 	}
+	// }
 
+	Vector *min_path = graph_dfs_shortest_path(adlist, N, S, T, 0);
+	
 	if (min_path->len == N + 1)
 		printf("-1\n");
 	else {
