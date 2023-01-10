@@ -61,16 +61,12 @@ int	main(void) {
 			// push_adlist(adlist[j], i);
 		}
 	}
-
-
 	int *visited = calloc(N+1, sizeof(int));
-	for (int i = 1; i <= N; i++) {
-		visited[i] = 0;
-	}
+
+	printf("%d", S);
 	visited[S] = 1;
 
 	int count = 0;
-	printf("%d", S);
 	for (int i = 1; i <= N; i++) {
 		for (int j = 0; j < adlist[i]->len; j++) {
 			if (i == j)
